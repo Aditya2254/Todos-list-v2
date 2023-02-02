@@ -10,7 +10,7 @@ exports.getDate = function(){
     }
     
     return today.toLocaleDateString("en-US",options);
-}
+};
 
 exports.getDay = function(){
     let today = new Date();

@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const date = require(__dirname + "/date.js");
 
 const app = express();
 
@@ -14,34 +15,28 @@ var items = [];
 var workItems = [];
 
 app.get("/", function (req, res) {
-  var today = new Date();
-  
-  var options={
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  }
 
-  res.render("list", { listTitle: today.toLocaleDateString("en-US",options),
+  let day = date.getDate();
+
+  res.render("list", { listTitle: day,
                         newListItems: items });
 });
-
 app.post("/",function(req,res){
-    var item = req.body.newItem;
-    if(req.body.button === "Work"){         //if add is clicked in work   clear will be undefined
+
+    let item = req.body.newItem;
+    if(req.body.button === "Work"){                    //if add is clicked in work
       workItems.push(item);
       res.redirect("/work");
     }
-    else if(req.body.clear === undefined){  //if add is clicked not in work   clear will be undefined
+    else if(req.body.button === date.getDay()){        //if add is clicked in normal list
       items.push(item);
       res.redirect("/");
     }
-    else if(req.body.clear === "Work"){     //if clear is clicked in work   button will be undefined
+    else if(req.body.clear === "Work"){                //if clear is clicked in work
       workItems=[];
       res.redirect("/work");
     }
-    else{                                   //if clear is clicked not in work button will be undefined
+    else if(req.body.clear === date.getDay()){         //if clear is clicked in normal list
       items=[];
       res.redirect("/");
     }

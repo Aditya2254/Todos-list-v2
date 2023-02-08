@@ -13,8 +13,6 @@ app.use(bodyParser.urlencoded( {extended:true}));
 app.use(express.static("public"));
 
 
-var workItems = [];
-
 app.get("/", function (req, res) {
   
   let day = date.getDate();
@@ -35,11 +33,7 @@ app.get("/", function (req, res) {
 app.post("/",function(req,res){
 
     let item = req.body.newItem;
-    if(req.body.button === "Work"){                    //if add is clicked in work
-      workItems.push(item);
-      res.redirect("/work");
-    }
-    else if(req.body.button === date.getDay()){        //if add is clicked in normal list
+    if(req.body.button === date.getDay()){        //if add is clicked in normal list
       let connection1 = mysql.createConnection(config);
       let sql = `insert into todos(id,title,completed) values(default,?,?)`;
       let data = [item,0];
@@ -47,10 +41,6 @@ app.post("/",function(req,res){
       connection1.end();
       
       res.redirect("/");
-    }
-    else if(req.body.clear === "Work"){                //if clear is clicked in work
-      workItems=[];
-      res.redirect("/work");
     }
     else if(req.body.clear === date.getDay()){         //if clear is clicked in normal list
       let connection4 = mysql.createConnection(config);
@@ -72,10 +62,6 @@ app.post("/delete",function(req,res) {
 
   res.redirect("/");
 })
-
-app.get("/work",function(req,res) {
-    res.render("list", {listTitle: "Work List", newListItems: workItems});
-});
 
 app.get("/about",function(req,res) {
     res.render("about");
